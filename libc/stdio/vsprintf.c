@@ -35,6 +35,53 @@ static char *int_to_str(char *end, int value, int base) {
     return result;
 }
 
+static char *ulong_to_str(char *end, unsigned long value, int base, bool isCapital) {
+    static const char digits[] = "0123456789abcdef";
+    static const char digitsCapital[] = "0123456789ABCDEF";
+
+    const char* finalDigits = isCapital ? digitsCapital : digits;
+
+    *end = '\0';
+    do {
+        *--end = finalDigits[value % base];
+        value /= base;
+    } while (value);
+    return end;
+}
+
+static char *long_to_str(char *end, long value, int base) {
+    int negative = value < 0;
+    unsigned long uvalue = negative ? -(unsigned long)value : (unsigned long)value;
+    char *result = ulong_to_str(end, uvalue, base, false);
+    if (negative)
+        *--result = '-';
+    return result;
+}
+
+static char *ulonglong_to_str(char *end, unsigned long long value, int base, bool isCapital) {
+    static const char digits[] = "0123456789abcdef";
+    static const char digitsCapital[] = "0123456789ABCDEF";
+
+    const char* finalDigits = isCapital ? digitsCapital : digits;
+
+    *end = '\0';
+    do {
+        *--end = finalDigits[value % base];
+        value /= base;
+    } while (value);
+    return end;
+}
+
+static char *longlong_to_str(char *end, long long value, int base) {
+    int negative = value < 0;
+    unsigned long long uvalue = negative ? -(unsigned long long)value : (unsigned long long)value;
+    char *result = ulonglong_to_str(end, uvalue, base, false);
+    if (negative)
+        *--result = '-';
+    return result;
+}
+
+
 int vsprintf(char *str, const char *format, va_list ap) {
     int written = 0;
     while (*format != '\0') {
