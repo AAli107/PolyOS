@@ -21,9 +21,10 @@ void kernel_main(void) {
 	printf("Hello, kernel \tWorld!\n");
 	printf("ehoi 🥀\n");
 	printf("%s", "dere's a special place in memory for you\n");
-	printf("%c", 'F');
-	int i = atoi("-123"); // does nothing but return 0 (INCOMPLETE IMPLEMENTATION OF `atoi`)
+	printf("%c\n", 'F');
+	int i = atoi("-123");
 	int j = abs(i);
+	printf("%d => %d", i, j);
 
 	char buf[256] = {};
 	sprintf(buf, "HALLO!!!%%%s%%%cgahh", "BRRAHHHHH12345", '\n');
