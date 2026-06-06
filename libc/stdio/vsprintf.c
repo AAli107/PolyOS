@@ -163,7 +163,30 @@ int vsprintf(char *str, const char *format, va_list ap) {
                 written += len;
             }
             break;
-        
+        case 'ld': 
+            {
+
+            }
+            break;
+        case 'lu':
+        case 'lx':
+        case 'lX':
+            {
+
+            }
+            break;
+        case 'lld': 
+            {
+
+            }
+            break;
+        case 'llu':
+        case 'llx':
+        case 'llX':
+            {
+
+            }
+            break;
         default:
             {
                 format = format_begun_at;
