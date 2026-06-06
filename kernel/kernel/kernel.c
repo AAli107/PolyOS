@@ -20,8 +20,8 @@ void kernel_main(void) {
 		"45",
 		"-452",
 		"-45200000000",
-		"2147483647",
-		"-2147483648",
+		"9223372036854775807",
+		"-9223372036854775808",
 		"123",
 		"-123",
 		"69",
@@ -30,9 +30,9 @@ void kernel_main(void) {
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		long at = atol(cases[i]);
-		long ab = labs(at);
-		printf("%s => %ld => %ld\n", cases[i], at, ab);
+		long long at = atoll(cases[i]);
+		long long ab = llabs(at);
+		printf("%s => %lld => %lld\n", cases[i], at, ab);
 	}
 	
 	char buf[256] = {};
