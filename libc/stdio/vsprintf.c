@@ -170,7 +170,16 @@ int vsprintf(char *str, const char *format, va_list ap) {
                 {
                 case 'd':
                 {
-                    
+                    format++;
+                    char buf[21] = {};
+                    const char* s = long_to_str(buf+20, va_arg(ap, long), 10);
+                    size_t len = strlen(s);
+                    if (maxrem < len) {
+                        // TODO: Set errno to EOVERFLOW.
+                        return -1;
+                    }
+                    fillBuffer(str, written, s, len);
+                    written += len;
                 }
                 break;
                 case 'u':
