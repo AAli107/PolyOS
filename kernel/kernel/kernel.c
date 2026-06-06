@@ -12,16 +12,8 @@ void kernel_main(void) {
 
 	// Don't mind the test code
 	printf("Hello, kernel World!\n");
-	printf("Hello, k\ternel World!\n");
-	printf("Hello, ke\trnel World!\n");
-	printf("Hello, ker\tnel World!\n");
-	printf("Hello, kern\tel World!\n");
-	printf("Hello, kerne\tl World!\n");
-	printf("Hello, kernel\t World!\n");
-	printf("Hello, kernel \tWorld!\n");
 	printf("ehoi 🥀\n");
 	printf("%s", "dere's a special place in memory for you\n");
-	printf("%c\n", 'F');
 	
 	const char* cases[10] = {
 		"1", 
@@ -38,16 +30,18 @@ void kernel_main(void) {
 
 	for (size_t i = 0; i < 10; i++)
 	{
-		int at = atoi(cases[i]);
-		int ab = abs(at);
-		printf("%s => %d => %d\n", cases[i], at, ab);
+		long at = atol(cases[i]);
+		long ab = labs(at);
+		printf("%ls => %ld => %ld\n", cases[i], at, ab);
 	}
 	
 	char buf[256] = {};
 	sprintf(buf, "HALLO!!!%%%s%%%cgahh", "BRRAHHHHH12345", '\n');
 	printf("\n%s", buf);
-	printf("\nint value: %d", 2147483647);
-	printf("\nuint value: %u", 4294967295);
-	printf("\nuint hex: 0x%x", 4294967295);
-	printf("\nuint HEX: 0x%X", 4294967295);
+	printf("\nlonglong value: %lld", 9223372036854775807);
+	printf("\nulonglong value: %llu", 18446744073709551615);
+	printf("\nulonglong hex: 0x%llx", 18446744073709551615);
+	printf("\nulonglong HEX: 0x%llX\n", 18446744073709551615);
+
+	printf("%u %u %u", (unsigned int)sizeof(int), (unsigned int)sizeof(long), (unsigned int)sizeof(long long));
 }
