@@ -22,10 +22,27 @@ void kernel_main(void) {
 	printf("ehoi 🥀\n");
 	printf("%s", "dere's a special place in memory for you\n");
 	printf("%c\n", 'F');
-	int i = atoi("-123");
-	int j = abs(i);
-	printf("%d => %d", i, j);
+	
+	const char* cases[10] = {
+		"1", 
+		"45",
+		"-452",
+		"-45200000000",
+		"2147483647",
+		"-2147483648",
+		"123",
+		"-123",
+		"69",
+		"420"
+	};
 
+	for (size_t i = 0; i < 10; i++)
+	{
+		int at = atoi(cases[i]);
+		int ab = abs(at);
+		printf("%s => %d => %d\n", cases[i], at, ab);
+	}
+	
 	char buf[256] = {};
 	sprintf(buf, "HALLO!!!%%%s%%%cgahh", "BRRAHHHHH12345", '\n');
 	printf("\n%s", buf);
