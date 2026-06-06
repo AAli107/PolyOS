@@ -32,7 +32,7 @@ void kernel_main(void) {
 	{
 		long at = atol(cases[i]);
 		long ab = labs(at);
-		printf("%ls => %ld => %ld\n", cases[i], at, ab);
+		printf("%s => %ld => %ld\n", cases[i], at, ab);
 	}
 	
 	char buf[256] = {};
