@@ -163,28 +163,44 @@ int vsprintf(char *str, const char *format, va_list ap) {
                 written += len;
             }
             break;
-        case 'ld': 
+        case 'l':
             {
+                format++;
+                switch (*format)
+                {
+                case 'd':
+                {
+                    
+                }
+                break;
+                case 'u':
+                case 'x':
+                case 'X':
+                    {
+                        
+                    }
+                    break;
+                case 'l': 
+                    {
+                        format++;
+                        switch (*format)
+                        {
+                            case 'd': 
+                            {
 
-            }
-            break;
-        case 'lu':
-        case 'lx':
-        case 'lX':
-            {
+                            }
+                            break;
+                        case 'u':
+                        case 'x':
+                        case 'X':
+                            {
 
-            }
-            break;
-        case 'lld': 
-            {
-
-            }
-            break;
-        case 'llu':
-        case 'llx':
-        case 'llX':
-            {
-
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
             break;
         default:
