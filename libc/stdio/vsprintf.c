@@ -186,7 +186,19 @@ int vsprintf(char *str, const char *format, va_list ap) {
                 case 'x':
                 case 'X':
                     {
-                        
+                        bool isCapitalHex = *format == 'X';
+                        bool isHex = isCapitalHex || *format == 'x';
+                        format++;
+                        char buf[21] = {};
+                        const char* s = ulong_to_str(buf+20, va_arg(ap, unsigned long), 
+                            isHex ? 16 : 10, isCapitalHex);
+                        size_t len = strlen(s);
+                        if (maxrem < len) {
+                            // TODO: Set errno to EOVERFLOW.
+                            return -1;
+                        }
+                        fillBuffer(str, written, s, len);
+                        written += len;
                     }
                     break;
                 case 'l': 
@@ -194,18 +206,39 @@ int vsprintf(char *str, const char *format, va_list ap) {
                         format++;
                         switch (*format)
                         {
-                            case 'd': 
+                            case 'd':
                             {
-
+                                format++;
+                                char buf[21] = {};
+                                const char* s = longlong_to_str(buf+20, va_arg(ap, long long), 10);
+                                size_t len = strlen(s);
+                                if (maxrem < len) {
+                                    // TODO: Set errno to EOVERFLOW.
+                                    return -1;
+                                }
+                                fillBuffer(str, written, s, len);
+                                written += len;
                             }
                             break;
-                        case 'u':
-                        case 'x':
-                        case 'X':
-                            {
-
-                            }
-                            break;
+                            case 'u':
+                            case 'x':
+                            case 'X':
+                                {
+                                    bool isCapitalHex = *format == 'X';
+                                    bool isHex = isCapitalHex || *format == 'x';
+                                    format++;
+                                    char buf[21] = {};
+                                    const char* s = ulonglong_to_str(buf+20, va_arg(ap, unsigned long long), 
+                                        isHex ? 16 : 10, isCapitalHex);
+                                    size_t len = strlen(s);
+                                    if (maxrem < len) {
+                                        // TODO: Set errno to EOVERFLOW.
+                                        return -1;
+                                    }
+                                    fillBuffer(str, written, s, len);
+                                    written += len;
+                                }
+                                break;
                         }
                     }
                     break;
