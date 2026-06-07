@@ -3,7 +3,7 @@
 #include <kernel/tty.h>
 
 // Fun fact, the reason I decided to do OS dev is cus I wanted to learn smth cool :)
-// Shoutout to "osdev.wiki" for giving out the knowledge and resources for developing operating systems.
+// Shoutout to "wiki.osdev.org" for giving out the knowledge and resources for developing operating systems.
 // As you can see as you look around, the project is just basically "Meaty Skeleton" but with extra flare! ✨
 // I don't expect to go far, but who knows? Maybe I'd lock in in the future if I stay working on it.
 void kernel_main(void) {
