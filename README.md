@@ -5,4 +5,4 @@ Super duper simple OS that does nothing special and is currently not very useabl
 It's mainly for me (AAli107) to learn, and to see how far can I go with OS Development. i don't expect to go far.
 
 ## Credits
-Big thanks to the [OS Dev wiki](https://wiki.osdev.org) as the project is mainly built on top of the "Meaty Skeleton" boilerplate code.
+Big thanks to the [OS Dev wiki](https://wiki.osdev.org) as the project is mainly built on top of the "Meaty Skeleton" boilerplate code that has been modified to use Limine Bootloader instead of GRUB.
