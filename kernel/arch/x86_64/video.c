@@ -31,6 +31,15 @@ void video_setPixel(uint32_t x, uint32_t y, struct pixel32 pixelData)
     fbAddress[y * (_frameBuffer->pitch / 4) + x] = *(uint32_t*)&pixelData;
 }
 
+void video_clear()
+{
+	for (size_t y = 0; y < _frameBuffer->height; y++) {
+		for (size_t x = 0; x < _frameBuffer->width; x++) {
+			fbAddress[y * (_frameBuffer->pitch / 4) + x] = 0;
+		}
+	}
+}
+
 uint64_t video_getWidth()
 {
     return _frameBuffer->width;
