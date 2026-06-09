@@ -4,8 +4,7 @@ set -e
 
 # Clone Limine binary release if not already present
 if [ ! -d limine ]; then
-    git clone https://github.com/limine-bootloader/limine.git \
-        --branch=v8.x-binary --depth=1 limine
+    git clone https://github.com/limine-bootloader/limine.git --branch=v8.x-binary --depth=1 limine
 fi
 
 # Build the limine host utility (needed for bios-install)
