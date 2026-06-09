@@ -17,21 +17,21 @@ static void kms(void) {
 }
 
 void kernel_main(void) {
-	// Initialization process
+	// Initialization process BEGIN
 
-	// Ensure we got a framebuffer.
+	// Tell the OS to kill itself when it does not have the framebuffer
     if (framebuffer_request.response == NULL
      || framebuffer_request.response->framebuffer_count < 1) {
         kms();
     }
 
-    // Fetch the first framebuffer.
+	// Get the framebuffer pointer (each pixel is assumed to be a 32-bit Pixel; Maybe RGBA??)
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-
-    // Print a nice pattern to screen as an example.
-    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
     volatile uint32_t *fb_ptr = framebuffer->address;
 
+	// Initialization process END
+
+    // Print test color gradient
 	for (size_t y = 0; y < framebuffer->height; y++) {
         for (size_t x = 0; x < framebuffer->width; x++) {
             uint32_t nX = x * 255 / framebuffer->width;
@@ -40,7 +40,7 @@ void kernel_main(void) {
         }
     }
 
-	return;
+	return; // stop here cus the terminal is yet to function correctly
 
 	terminal_initialize();
 
