@@ -18,6 +18,8 @@ int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest) 
 
     fbAddress = (uint32_t *)_frameBuffer->address;
 
+    video_clear();
+
     return 0;
 }
 
