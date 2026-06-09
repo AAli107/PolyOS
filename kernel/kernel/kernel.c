@@ -19,29 +19,30 @@ static void kms(void) {
 
 void kernel_main(void) {
 	// Initialization process BEGIN
-
-	// Tell the OS to kill itself when it does not have the framebuffer
-    if (framebuffer_request.response == NULL
-     || framebuffer_request.response->framebuffer_count < 1) {
-        kms();
-    }
 	
 	// Initialize video, if it fails, then tell the OS to kill itself
-    struct limine_framebuffer* framebuffer = framebuffer_request.response->framebuffers[0];
-	if (video_initialize(framebuffer) != 0) {
+	if (video_initialize(&framebuffer_request) != 0) {
 		kms();
 	}
 
 	// Initialization process END
 
-    // Print test color gradient
-	for (size_t y = 0; y < framebuffer->height; y++) {
-        for (size_t x = 0; x < framebuffer->width; x++) {
-            uint32_t nX = x * 255 / framebuffer->width;
-            uint32_t nY = y * 255 / framebuffer->height;
-            video_putPixel(x, y, (nY << 8) | nX);
-        }
-    }
+	// Draw colored lines
+	uint64_t width = video_getWidth();
+	uint64_t height = video_getHeight();
+	for (size_t y = 0; y < height; y++) {
+		for (size_t x = 0; x < width; x++) {
+			uint32_t n = (x / 8) % 4;
+			struct pixel32 pixel = {
+				.b = n == 0 ? 255 : 0,
+				.g = n == 1 ? 255 : 0,
+				.r = n == 2 ? 255 : 0,
+				.x = n == 3 ? 255 : 0
+			};
+			
+			video_setPixel(x, y, pixel);
+		}
+	}
 
 	return; // stop here cus the terminal is yet to function correctly
 
