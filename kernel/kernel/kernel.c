@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <kernel/tty.h>
+#include <kernel/video.h>
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
@@ -24,10 +25,12 @@ void kernel_main(void) {
      || framebuffer_request.response->framebuffer_count < 1) {
         kms();
     }
-
-	// Get the framebuffer pointer (each pixel is assumed to be a 32-bit Pixel; Maybe RGBA??)
-    struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-    volatile uint32_t *fb_ptr = framebuffer->address;
+	
+	// Initialize video, if it fails, then tell the OS to kill itself
+    struct limine_framebuffer* framebuffer = framebuffer_request.response->framebuffers[0];
+	if (video_initialize(framebuffer) != 0) {
+		kms();
+	}
 
 	// Initialization process END
 
@@ -36,7 +39,7 @@ void kernel_main(void) {
         for (size_t x = 0; x < framebuffer->width; x++) {
             uint32_t nX = x * 255 / framebuffer->width;
             uint32_t nY = y * 255 / framebuffer->height;
-            fb_ptr[y * (framebuffer->pitch / 4) + x] = (nY << 8) | nX;
+            video_putPixel(x, y, (nY << 8) | nX);
         }
     }
 
