@@ -14,8 +14,8 @@ struct pixel32
 };
 
 
-void video_initialize(struct limine_framebuffer framebuffer);
-void video_setPixel(int32_t x, int32_t y, struct pixel32 pixelData);
-void video_putPixel(int32_t x, int32_t y, uint32_t pixelData);
+int32_t video_initialize(struct limine_framebuffer* framebuffer);
+void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData);
+void video_setPixel(uint32_t x, uint32_t y, struct pixel32 pixelData);
 
 #endif
