@@ -18,7 +18,7 @@ static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer;
 
-void terminal_initialize(void) {
+void terminal_initialize() {
 	terminal_row = 0;
 	terminal_column = 0;
 	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
@@ -123,7 +123,7 @@ bool terminal_isSafe()
 bool terminal_isSafePosition(size_t x, size_t y)
 {
 	return
-		terminal_buffer == (uint16_t *) 0xB8000 &&
+		terminal_buffer != NULL &&
 		x < VGA_WIDTH && 
 		y < VGA_HEIGHT;
 }

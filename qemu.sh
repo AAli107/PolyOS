@@ -2,4 +2,4 @@
 set -e
 . ./iso.sh
 
-qemu-system-$(./target-triplet-to-arch.sh $HOST) -cdrom PolyOS.iso
+qemu-system-x86_64 -cdrom PolyOS.iso -m 2G -no-reboot

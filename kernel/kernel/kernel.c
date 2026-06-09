@@ -1,13 +1,47 @@
+#include <limine.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <kernel/tty.h>
 
-// Fun fact, the reason I decided to do OS dev is cus I wanted to learn smth cool :)
-// Shoutout to "wiki.osdev.org" for giving out the knowledge and resources for developing operating systems.
-// As you can see as you look around, the project is just basically "Meaty Skeleton" but with extra flare! ✨
-// I don't expect to go far, but who knows? Maybe I'd lock in in the future if I stay working on it.
+__attribute__((used, section(".limine_requests")))
+static volatile struct limine_framebuffer_request framebuffer_request = {
+    .id = LIMINE_FRAMEBUFFER_REQUEST,
+    .revision = 0
+};
+
+// halt and explode OS
+static void kms(void) {
+    for (;;) {
+        asm ("hlt");
+    }
+}
+
 void kernel_main(void) {
 	// Initialization process
+
+	// Ensure we got a framebuffer.
+    if (framebuffer_request.response == NULL
+     || framebuffer_request.response->framebuffer_count < 1) {
+        kms();
+    }
+
+    // Fetch the first framebuffer.
+    struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
+
+    // Print a nice pattern to screen as an example.
+    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
+    volatile uint32_t *fb_ptr = framebuffer->address;
+
+	for (size_t y = 0; y < framebuffer->height; y++) {
+        for (size_t x = 0; x < framebuffer->width; x++) {
+            uint32_t nX = x * 255 / framebuffer->width;
+            uint32_t nY = y * 255 / framebuffer->height;
+            fb_ptr[y * (framebuffer->pitch / 4) + x] = (nY << 8) | nX;
+        }
+    }
+
+	return;
+
 	terminal_initialize();
 
 	// Don't mind the test code
@@ -38,10 +72,18 @@ void kernel_main(void) {
 	char buf[256] = {};
 	sprintf(buf, "HALLO!!!%%%s%%%cgahh", "BRRAHHHHH12345", '\n');
 	printf("\n%s", buf);
-	printf("\nlonglong value: %lld", 9223372036854775807);
-	printf("\nulonglong value: %llu", 18446744073709551615);
-	printf("\nulonglong hex: 0x%llx", 18446744073709551615);
-	printf("\nulonglong HEX: 0x%llX\n", 18446744073709551615);
+	printf("\nlonglong value: %lld", 9223372036854775807LL);
+	printf("\nulonglong value: %llu", 18446744073709551615ULL);
+	printf("\nulonglong hex: 0x%llx", 18446744073709551615ULL);
+	printf("\nulonglong HEX: 0x%llX\n", 18446744073709551615ULL);
 
 	printf("%u %u %u", (unsigned int)sizeof(int), (unsigned int)sizeof(long), (unsigned int)sizeof(long long));
+}
+
+__attribute__((noreturn))
+void _start(void) {
+    kernel_main();
+    for (;;) {
+        __asm__ volatile ("hlt");
+    }
 }
