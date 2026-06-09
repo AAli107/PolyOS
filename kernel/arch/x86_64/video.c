@@ -1,4 +1,4 @@
-#include <video.h>
+#include <kernel/video.h>
 
 volatile uint32_t* fb_ptr;
 
