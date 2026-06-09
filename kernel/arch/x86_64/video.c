@@ -1,5 +1,4 @@
 #include <kernel/video.h>
-#include "video.h"
 
 struct limine_framebuffer* _frameBuffer;
 volatile uint32_t* fbAddress;
