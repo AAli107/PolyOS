@@ -18,10 +18,18 @@ static void kms(void) {
     }
 }
 
+#define KERNEL_STACK_SIZE 8192
+
+static uint8_t kernel_stack[KERNEL_STACK_SIZE];
+
 void kernel_main(void) {
 	// Initialization process BEGIN
 	
 	gdt_init();
+
+	gdt_set_kernel_stack(
+		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
+	);
 
 	// Initialize video, if it fails, then tell the OS to kill itself
 	if (video_initialize(&framebuffer_request) != 0) {

@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdint.h>
 
-// 8-byte GDT entry
+// Size : 8 bytes
 struct gdt_entry {
     uint16_t limit_low;
     uint16_t base_low;
@@ -12,7 +12,7 @@ struct gdt_entry {
     uint8_t  base_high;
 } __attribute__((packed));
 
-// TSS descriptor is 16 bytes (occupies two GDT slots)
+// Size : 16 bytes
 struct tss_descriptor {
     uint16_t limit_low;
     uint16_t base_low;
@@ -24,10 +24,10 @@ struct tss_descriptor {
     uint32_t reserved;
 } __attribute__((packed));
 
-// the TSS
+// the TSS structure
 struct tss {
     uint32_t reserved0;
-    uint64_t rsp0;        // kernel stack pointer (set before entering user mode)
+    uint64_t rsp0;
     uint64_t rsp1;
     uint64_t rsp2;
     uint64_t reserved1;
@@ -37,15 +37,24 @@ struct tss {
     uint16_t iopb_offset;
 } __attribute__((packed));
 
+// global descriptor table register data
 struct gdtr {
     uint16_t limit;
     uint64_t base;
 } __attribute__((packed));
 
-// Index: 0=null 1=kcode 2=kdata 3=ucode 4=udata 5+6=tss
+/* What each index in the gdt array represents
+ * 0    =   null
+ * 1    =   kcode
+ * 2    =   kdata
+ * 3    =   ucode
+ * 4    =   udata
+ * 5 6  =   tss
+ */
 static struct gdt_entry gdt[7];
 static struct tss tss;
 
+// Helper : Sets a specific entry at "i" index
 static void set_entry(int i, uint8_t access, uint8_t flags) {
     gdt[i].limit_low  = 0xFFFF;
     gdt[i].base_low   = 0;
@@ -73,6 +82,7 @@ void gdt_init(void) {
     memset(&tss, 0, sizeof(tss));
     tss.iopb_offset = sizeof(tss);
 
+    // set all the entries as well as the TSS
     set_entry(0, 0x00, 0x00);  // null
     set_entry(1, 0x9A, 0xA0);  // kernel code - ring 0, 64-bit
     set_entry(2, 0x92, 0xC0);  // kernel data - ring 0
@@ -85,6 +95,7 @@ void gdt_init(void) {
         .base  = (uint64_t)&gdt
     };
 
+    // feed in the gdtr struct values into the system
     __asm__ volatile (
         "lgdt %0\n"
         "push $0x08\n"
@@ -105,6 +116,7 @@ void gdt_init(void) {
         : "rax", "memory"
     );
 }
+
 
 void gdt_set_kernel_stack(uint64_t rsp0) {
     tss.rsp0 = rsp0;
