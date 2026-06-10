@@ -89,6 +89,20 @@ void kernel_main(void) {
 
 __attribute__((noreturn))
 void _start(void) {
+
+	__asm__ volatile (
+		"movq %%cr0, %%rax\n"
+		"andw $0xFFFB, %%ax\n"      // clear CR0.EM
+		"orw  $0x2, %%ax\n"         // set CR0.MP
+		"movq %%rax, %%cr0\n"
+		"movq %%cr4, %%rax\n"
+		"orw  $(3 << 9), %%ax\n"    // set CR4.OSFXSR and CR4.OSXMMEXCPT
+		"movq %%rax, %%cr4\n"
+		:
+		:
+		: "rax", "memory"
+	);
+
     kernel_main();
     for (;;) {
         __asm__ volatile ("hlt");

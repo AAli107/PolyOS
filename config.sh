@@ -14,7 +14,8 @@ export BOOTDIR=/boot
 export LIBDIR=$EXEC_PREFIX/lib
 export INCLUDEDIR=$PREFIX/include
 
-export CFLAGS='-O2 -g'
+export CFLAGS='-O2 -g -march=x86-64 -mno-mmx'
+
 export CPPFLAGS=''
 
 # Configure the cross-compiler to use the desired system root.
