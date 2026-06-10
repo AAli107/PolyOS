@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <kernel/tty.h>
 #include <kernel/video.h>
+#include <kernel/gdt.h>
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
@@ -20,6 +21,8 @@ static void kms(void) {
 void kernel_main(void) {
 	// Initialization process BEGIN
 	
+	gdt_init();
+
 	// Initialize video, if it fails, then tell the OS to kill itself
 	if (video_initialize(&framebuffer_request) != 0) {
 		kms();
