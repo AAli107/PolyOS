@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <kernel/tty.h>
 #include <kernel/video.h>
+#include <kernel/gdt.h>
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
@@ -17,15 +18,11 @@ static void kms(void) {
     }
 }
 
-void kernel_main(void) {
-	// Initialization process BEGIN
-	
-	// Initialize video, if it fails, then tell the OS to kill itself
-	if (video_initialize(&framebuffer_request) != 0) {
-		kms();
-	}
+#define KERNEL_STACK_SIZE 65536
 
-	// Initialization process END
+static uint8_t kernel_stack[KERNEL_STACK_SIZE];
+
+void kernel_main(void) {
 
 	// Draw colored lines
 	uint64_t width = video_getWidth();
@@ -86,7 +83,37 @@ void kernel_main(void) {
 
 __attribute__((noreturn))
 void _start(void) {
+
+	// Pre kernel_main initialization START
+
+	__asm__ volatile (
+		"movq %%cr0, %%rax\n"
+		"andw $0xFFFB, %%ax\n"      // clear CR0.EM
+		"orw  $0x2, %%ax\n"         // set CR0.MP
+		"movq %%rax, %%cr0\n"
+		"movq %%cr4, %%rax\n"
+		"orw  $(3 << 9), %%ax\n"    // set CR4.OSFXSR and CR4.OSXMMEXCPT
+		"movq %%rax, %%cr4\n"
+		:
+		:
+		: "rax", "memory"
+	);
+
+	gdt_init();
+
+	gdt_set_kernel_stack(
+		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
+	);
+
+	// Initialize video, if it fails, then tell the OS to kill itself
+	if (video_initialize(&framebuffer_request) != 0) {
+		kms();
+	}
+
+	// Pre kernel_main initialization END
+
     kernel_main();
+
     for (;;) {
         __asm__ volatile ("hlt");
     }
