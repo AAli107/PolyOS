@@ -38,7 +38,7 @@ void interrupt_dispatch(interrupt_frame_t *frame) {
     interrupt_handler_t h = handlers[frame->int_num];
     if (h)
         h(frame);
-    // unhandled interrupt — do nothing for now
+    // unhandled interrupt : do nothing for now
     // TODO: panic on unhandled exceptions
 }
 

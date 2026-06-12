@@ -1,6 +1,6 @@
 .section .text
 
-# Stubs for exceptions WITHOUT error code — push dummy 0
+# Stubs for exceptions WITHOUT error code : push dummy 0
 .macro ISR_NOERR num
 .global __isr_stub_\num
 __isr_stub_\num:
@@ -9,7 +9,7 @@ __isr_stub_\num:
     jmp isr_common
 .endm
 
-# Stubs for exceptions WITH error code — CPU already pushed it
+# Stubs for exceptions WITH error code : CPU already pushed it
 .macro ISR_ERR num
 .global __isr_stub_\num
 __isr_stub_\num:
@@ -51,7 +51,7 @@ ISR_ERR   29   # VMM communication
 ISR_ERR   30   # Security exception
 ISR_NOERR 31
 
-# IRQs 32-255 — none have error codes, generate with a loop
+# IRQs 32-255 : none have error codes, generate with a loop
 .altmacro
 .macro ISR_NOERR_N num
 .global __isr_stub_\num
@@ -67,7 +67,7 @@ __isr_stub_\num:
     .set i, i+1
 .endr
 
-# Common handler — saves all regs, calls C, restores, returns
+# Common handler : saves all regs, calls C, restores, returns
 isr_common:
     push %rax
     push %rbx
@@ -111,7 +111,7 @@ isr_common:
     .quad __isr_stub_\num
 .endm
 
-# Table of all 256 stub addresses — used by idt_init
+# Table of all 256 stub addresses : used by idt_init
 .global isr_table
 isr_table:
 .set i, 0

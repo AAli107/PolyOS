@@ -5,6 +5,8 @@
 #include <kernel/video.h>
 #include <kernel/gdt.h>
 #include <kernel/idt.h>
+#include <kernel/exceptions.h>
+#include <kernel/irq.h>
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
@@ -102,6 +104,8 @@ void _start(void) {
 
 	gdt_init();
 	idt_init();
+	exceptions_init();
+	irq_init();
 
 	gdt_set_kernel_stack(
 		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
