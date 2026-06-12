@@ -1,6 +1,7 @@
 #include <kernel/idt.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 struct idt_entry {
     uint16_t offset_low;
@@ -36,10 +37,14 @@ static void set_entry(int num, void *handler, uint8_t flags) {
 
 void interrupt_dispatch(interrupt_frame_t *frame) {
     interrupt_handler_t h = handlers[frame->int_num];
-    if (h)
-        h(frame);
-    // unhandled interrupt : do nothing for now
-    // TODO: panic on unhandled exceptions
+    if (h) h(frame);
+        
+    if (frame->int_num < 32) {
+        printf("Unhandled exception %u\n", frame->int_num);
+
+        for (;;)
+            asm volatile("hlt");
+    }
 }
 
 void idt_register_handler(uint8_t num, interrupt_handler_t handler) {
