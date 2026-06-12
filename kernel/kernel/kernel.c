@@ -28,6 +28,8 @@ static uint8_t kernel_stack[KERNEL_STACK_SIZE];
 
 void kernel_main(void) {
 
+	video_setEnableBlend(true);
+
 	// Draw colored lines
 	uint64_t width = video_getWidth();
 	uint64_t height = video_getHeight();
@@ -38,7 +40,7 @@ void kernel_main(void) {
 				.b = n == 0 ? 255 : 0,
 				.g = n == 1 ? 255 : 0,
 				.r = n == 2 ? 255 : 0,
-				.x = n == 3 ? 255 : 0
+				.x = 255
 			};
 			
 			video_setPixel(x, y, pixel);
@@ -55,9 +57,9 @@ void kernel_main(void) {
 		.b = 0,
 		.g = 0,
 		.r = 0,
-		.x = 0
+		.x = 128
 	};
-	
+
 	// test characters
 	int scale = 4;
 	for (int i = 0; i < 256; i++)
