@@ -36,28 +36,28 @@ void kernel_main(void) {
 	for (size_t y = 0; y < height; y++) {
 		for (size_t x = 0; x < width; x++) {
 			uint32_t n = (x / 8) % 4;
-			struct pixel32 pixel = {
+			struct color32 pixel = {
 				.b = n == 0 ? 255 : 0,
 				.g = n == 1 ? 255 : 0,
 				.r = n == 2 ? 255 : 0,
-				.x = 255
+				.a = 255
 			};
 			
 			video_setPixel(x, y, pixel);
 		}
 	}
 
-	struct pixel32 fg = {
+	struct color32 fg = {
 		.b = 255,
 		.g = 255,
 		.r = 255,
-		.x = 255
+		.a = 255
 	};
-	struct pixel32 bg = {
+	struct color32 bg = {
 		.b = 0,
 		.g = 0,
 		.r = 0,
-		.x = 128
+		.a = 128
 	};
 
 	// test characters
