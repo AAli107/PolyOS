@@ -1,6 +1,7 @@
 #include <kernel/idt.h>
 #include <kernel/exceptions.h>
 #include <stdio.h>
+#include <kernel/video.h>
 
 // Vector 0 : #DE Divide Error
 // Fired by: DIV or IDIV with a zero divisor, or when the quotient overflows.
@@ -8,6 +9,10 @@
 // error_code: not present (always 0).
 static void de_handler(interrupt_frame_t* frame) {
     (void)frame;
+    // test
+    video_clear();
+    for (;;)
+        asm volatile("hlt");
 }
 
 // Vector 1 : #DB Debug

@@ -44,6 +44,10 @@ void kernel_main(void) {
 		}
 	}
 
+	// divide by zero test
+	volatile int zero = 0;
+	volatile int x = 10 / zero;
+
 	return; // stop here cus the terminal is yet to function correctly
 
 	terminal_initialize();
