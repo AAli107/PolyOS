@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 // Assumes each pixel is 32-bits and the last 8-bits are unused
+// If bits per pixel is not 32, the video_initialize will reject it
 struct pixel32
 {
     uint8_t b;
