@@ -43,7 +43,7 @@ void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData)
     if (x >= _frameBuffer->width || y >= _frameBuffer->height)
         return;
     if (_enableBlend) {
-        uint32_t finalColor = video_color_blend(video_readPixel(x, y), pixelData);
+        uint32_t finalColor = video_uint32_blend(video_readPixel(x, y), pixelData);
         fbAddress[y * (_frameBuffer->pitch / 4) + x] = finalColor;
     }
     else {
@@ -85,7 +85,7 @@ uint64_t video_getHeight()
     return _frameBuffer->height;
 }
 
-uint32_t video_color_blend(uint32_t dst, uint32_t src)
+uint32_t video_uint32_blend(uint32_t dst, uint32_t src)
 {
     uint32_t alpha = (src >> 24) & 0xFF;
 
@@ -101,7 +101,7 @@ uint32_t video_color_blend(uint32_t dst, uint32_t src)
     return b | (g << 8) | (r << 16) | (255 << 24);
 }
 
-struct color32 video_pixel32_blend(struct color32 dst, struct color32 src)
+struct color32 video_color32_blend(struct color32 dst, struct color32 src)
 {
-    return *(const struct color32 *)video_color_blend(*(uint32_t*)&dst, *(uint32_t*)&src);
+    return *(const struct color32 *)video_uint32_blend(*(uint32_t*)&dst, *(uint32_t*)&src);
 }

@@ -46,9 +46,9 @@ uint64_t video_getWidth();
 uint64_t video_getHeight();
 
 // Blends two colors, which accepts and recieves uint32_t
-uint32_t video_color_blend(uint32_t dst, uint32_t src);
+uint32_t video_uint32_blend(uint32_t dst, uint32_t src);
 
 // Blends two colors, which accepts and recieves color32
-struct color32 video_pixel32_blend(struct color32 dst, struct color32 src);
+struct color32 video_color32_blend(struct color32 dst, struct color32 src);
 
 #endif
