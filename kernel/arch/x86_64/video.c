@@ -23,6 +23,20 @@ int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest) 
     return 0;
 }
 
+uint32_t video_readPixel(uint32_t x, uint32_t y)
+{
+    if (x >= _frameBuffer->width || y >= _frameBuffer->height)
+        return 0;
+    return fbAddress[y * (_frameBuffer->pitch / 4) + x];
+}
+
+struct pixel32 video_getPixel(uint32_t x, uint32_t y)
+{
+    if (x >= _frameBuffer->width || y >= _frameBuffer->height)
+        return (struct pixel32){0};
+    return *(const struct pixel32 *)(&fbAddress[y * (_frameBuffer->pitch / 4) + x]);
+}
+
 void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData)
 {
     if (x >= _frameBuffer->width || y >= _frameBuffer->height)

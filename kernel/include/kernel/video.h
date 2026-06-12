@@ -15,6 +15,8 @@ struct pixel32
 };
 
 int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest);
+uint32_t video_readPixel(uint32_t x, uint32_t y);
+struct pixel32 video_getPixel(uint32_t x, uint32_t y);
 void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData);
 void video_setPixel(uint32_t x, uint32_t y, struct pixel32 pixelData);
 void video_clear();
