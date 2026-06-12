@@ -8,7 +8,7 @@
 // frame->rip: points to the DIV/IDIV instruction.
 // error_code: not present (always 0).
 static void de_handler(interrupt_frame_t* frame) {
-    
+    (void)frame;
     // test - division by zero clears screen
     video_clear();
 }

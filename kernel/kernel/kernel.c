@@ -9,7 +9,7 @@
 #include <kernel/irq.h>
 
 __attribute__((used, section(".limine_requests")))
-static volatile struct limine_framebuffer_request framebuffer_request = {
+static struct limine_framebuffer_request framebuffer_request = {
     .id = LIMINE_FRAMEBUFFER_REQUEST,
     .revision = 0
 };
@@ -48,6 +48,7 @@ void kernel_main(void) {
 	if (false) {
 		volatile int zero = 0;
 		volatile int x = 10 / zero;
+		(void)x;
 	}
 
 	return; // stop here cus the terminal is yet to function correctly
