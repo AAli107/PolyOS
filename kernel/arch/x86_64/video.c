@@ -35,9 +35,7 @@ uint32_t video_readPixel(uint32_t x, uint32_t y)
 
 struct color32 video_getPixel(uint32_t x, uint32_t y)
 {
-    if (x >= _frameBuffer->width || y >= _frameBuffer->height)
-        return (struct color32){0};
-    return *(const struct color32 *)(&fbAddress[y * (_frameBuffer->pitch / 4) + x]);
+    return *(const struct color32 *)video_readPixel(x, y);
 }
 
 void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData)
@@ -55,14 +53,7 @@ void video_putPixel(uint32_t x, uint32_t y, uint32_t pixelData)
 
 void video_setPixel(uint32_t x, uint32_t y, struct color32 pixelData)
 {
-    if (x >= _frameBuffer->width || y >= _frameBuffer->height)
-        return;
-    if (_enableBlend) {
-        struct color32 finalColor = video_pixel32_blend(video_getPixel(x, y), pixelData);
-        fbAddress[y * (_frameBuffer->pitch / 4) + x] = *(uint32_t*)&finalColor;
-    } else {
-        fbAddress[y * (_frameBuffer->pitch / 4) + x] = *(uint32_t*)&pixelData;
-    }
+    video_putPixel(x, y, *(uint32_t*)&pixelData);
 }
 
 void video_clear()
@@ -112,19 +103,5 @@ uint32_t video_color_blend(uint32_t dst, uint32_t src)
 
 struct color32 video_pixel32_blend(struct color32 dst, struct color32 src)
 {
-    uint32_t alpha = src.a;
-
-    if (alpha == 255) return src;
-    if (alpha == 0)   return dst;
-
-    uint32_t inv_alpha = 255 - alpha;
-    struct color32 out;
-
-    out.b = ((uint32_t)src.b * alpha + (uint32_t)dst.b * inv_alpha + 255) >> 8;
-    out.g = ((uint32_t)src.g * alpha + (uint32_t)dst.g * inv_alpha + 255) >> 8;
-    out.r = ((uint32_t)src.r * alpha + (uint32_t)dst.r * inv_alpha + 255) >> 8;
-    
-    out.a = 255; 
-
-    return out;
+    return *(const struct color32 *)video_color_blend(*(uint32_t*)&dst, *(uint32_t*)&src);
 }
