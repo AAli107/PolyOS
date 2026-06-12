@@ -27,9 +27,13 @@ CPPFLAGS:=$(CPPFLAGS) $(KERNEL_ARCH_CPPFLAGS)
 LDFLAGS:=$(LDFLAGS) $(KERNEL_ARCH_LDFLAGS)
 LIBS:=$(LIBS) $(KERNEL_ARCH_LIBS)
 
+FONT_SRC := ../assets/8x8_monospace_bitmap_font.psf
+FONT_BIN := font.psf
+
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 kernel/kernel.o \
+font.o \
 
 OBJS=\
 $(KERNEL_OBJS) \
@@ -53,9 +57,16 @@ PolyOS.kernel: $(OBJS) $(ARCHDIR)/linker.ld
 .S.o:
 	$(CC) -MD -c $< -o $@ $(CFLAGS) $(CPPFLAGS)
 
+font.psf: $(FONT_SRC)
+	cp $< $@
+
+font.o: font.psf
+	objcopy -O elf64-x86-64 -B i386 -I binary $< $@
+
 clean:
 	rm -f PolyOS.kernel
 	rm -f $(OBJS) *.o */*.o */*/*.o
+	rm -f font.psf
 	rm -f $(OBJS:.o=.d) *.d */*.d */*/*.d
 
 install: install-headers install-kernel
