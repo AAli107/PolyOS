@@ -4,6 +4,9 @@
 #include <kernel/tty.h>
 #include <kernel/video.h>
 #include <kernel/gdt.h>
+#include <kernel/idt.h>
+#include <kernel/exceptions.h>
+#include <kernel/irq.h>
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
@@ -39,6 +42,12 @@ void kernel_main(void) {
 			
 			video_setPixel(x, y, pixel);
 		}
+	}
+
+	// divide by zero test (look at exceptions.c "de_handler" function to know what it will do)
+	if (false) {
+		volatile int zero = 0;
+		volatile int x = 10 / zero;
 	}
 
 	return; // stop here cus the terminal is yet to function correctly
@@ -99,7 +108,13 @@ void _start(void) {
 		: "rax", "memory"
 	);
 
-	gdt_init();
+	gdt_init(); // sets up the global descriptor table
+
+	idt_init(); // sets up the interrupt descriptor table
+	
+	// registers handlers for exceptions and irqs 
+	exceptions_init();
+	irq_init();
 
 	gdt_set_kernel_stack(
 		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
