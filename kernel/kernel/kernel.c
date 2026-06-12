@@ -1,12 +1,13 @@
 #include <limine.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <kernel/tty.h>
-#include <kernel/video.h>
 #include <kernel/gdt.h>
 #include <kernel/idt.h>
 #include <kernel/exceptions.h>
 #include <kernel/irq.h>
+#include <kernel/video.h>
+#include <kernel/tty.h>
+#include <kernel/font.h>
 
 __attribute__((used, section(".limine_requests")))
 static struct limine_framebuffer_request framebuffer_request = {
@@ -42,6 +43,28 @@ void kernel_main(void) {
 			
 			video_setPixel(x, y, pixel);
 		}
+	}
+
+	struct pixel32 fg = {
+		.b = 255,
+		.g = 255,
+		.r = 255,
+		.x = 255
+	};
+	struct pixel32 bg = {
+		.b = 0,
+		.g = 0,
+		.r = 0,
+		.x = 0
+	};
+	
+	// test characters
+	int scale = 4;
+	for (int i = 0; i < 256; i++)
+	{
+		int x = i % 16;
+		int y = i / 16;
+		font_drawChar(x * font_getWidth() * scale, y * font_getHeight() * scale, i, *(uint32_t*)&fg, *(uint32_t*)&bg, scale);
 	}
 
 	// divide by zero test (look at exceptions.c "de_handler" function to know what it will do)
