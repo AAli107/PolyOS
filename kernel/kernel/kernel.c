@@ -106,8 +106,11 @@ void _start(void) {
 		: "rax", "memory"
 	);
 
-	gdt_init();
-	idt_init();
+	gdt_init(); // sets up the global descriptor table
+
+	idt_init(); // sets up the interrupt descriptor table
+	
+	// registers handlers for exceptions and irqs 
 	exceptions_init();
 	irq_init();
 
