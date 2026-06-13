@@ -91,8 +91,11 @@ void _start(void) {
 
 	// Pre kernel_main initialization START
 
+	// initialize terminal and serial
 	serial_init();
+	terminal_initialize();
 
+	// sets up SSE
 	__asm__ volatile (
 		"movq %%cr0, %%rax\n"
 		"andw $0xFFFB, %%ax\n"      // clear CR0.EM
@@ -122,8 +125,6 @@ void _start(void) {
 	if (video_initialize(&framebuffer_request) != 0) {
 		kms();
 	}
-
-	terminal_initialize();
 
 	// Pre kernel_main initialization END
 
