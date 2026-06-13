@@ -1,5 +1,6 @@
 #include <kernel/video.h>
 #include <stddef.h>
+#include <stdio.h>
 
 static bool _enableBlend;
 struct limine_framebuffer* _frameBuffer;
@@ -23,6 +24,7 @@ int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest) 
     
     video_setEnableBlend(false);
 
+    printf("%s", "Video initialized    [  ok  ]\n");
     return 0;
 }
 

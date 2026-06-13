@@ -92,8 +92,13 @@ void _start(void) {
 	// Pre kernel_main initialization START
 
 	// initialize terminal and serial
-	serial_init();
 	terminal_initialize();
+	serial_init();
+
+	// Initialize video, if it fails, then tell the OS to kill itself
+	if (video_initialize(&framebuffer_request) != 0) {
+		kms();
+	}
 
 	// sets up SSE
 	__asm__ volatile (
@@ -121,10 +126,7 @@ void _start(void) {
 		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
 	);
 
-	// Initialize video, if it fails, then tell the OS to kill itself
-	if (video_initialize(&framebuffer_request) != 0) {
-		kms();
-	}
+	terminal_clear();
 
 	// Pre kernel_main initialization END
 

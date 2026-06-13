@@ -244,4 +244,7 @@ void exceptions_init(void) {
     idt_register_handler(21, cp_handler);
     for (int i = 22; i <= 31; i++)
         idt_register_handler(i, reserved2_handler);
+
+    
+    printf("%s", "Registered exception handlers    [  ok  ]\n");
 }

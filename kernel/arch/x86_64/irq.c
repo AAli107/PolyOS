@@ -2,6 +2,7 @@
 #include <kernel/idt.h>
 #include <kernel/io.h>
 #include <stdint.h>
+#include <stdio.h>
 
 // to speed shit up, I just told AI to automatically generate bunch of irq handling functions for me to fill in later :P
 // This is the same for exceptions within exceptions.c
@@ -195,4 +196,6 @@ void irq_init(void) {
     idt_register_handler(45, irq13_fpu);
     idt_register_handler(46, irq14_ata_primary);
     idt_register_handler(47, irq15_ata_secondary_spurious);
+
+    printf("%s", "Registered IRQ handlers    [  ok  ]\n");
 }

@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include <kernel/tty.h>
 #include <kernel/font.h>
@@ -31,6 +32,8 @@ void terminal_initialize(void) {
 		.a = 255
 	};
 	terminal_clear();
+
+    printf("%s", "Terminal initialized    [  ok  ]\n");
 }
 
 void terminal_clear()

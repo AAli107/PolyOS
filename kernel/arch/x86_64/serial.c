@@ -1,5 +1,6 @@
 #include <kernel/serial.h>
 #include <kernel/io.h>
+#include <stdio.h>
 
 void serial_init(void) {
     outb(PORT_COM1 + 1, 0x00);
@@ -9,6 +10,7 @@ void serial_init(void) {
     outb(PORT_COM1 + 3, 0x03);
     outb(PORT_COM1 + 2, 0xC7);
     outb(PORT_COM1 + 4, 0x0B);
+    printf("%s", "Serial initialized    [  ok  ]\n");
 }
 
 static void wait_transmit(void) {

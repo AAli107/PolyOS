@@ -1,6 +1,7 @@
 #include <kernel/gdt.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdio.h>
 
 // Size : 8 bytes
 struct gdt_entry {
@@ -115,6 +116,8 @@ void gdt_init(void) {
         : "m"(gdtr)
         : "rax", "memory"
     );
+
+    printf("%s", "GDT initialized    [  ok  ]\n");
 }
 
 
