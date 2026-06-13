@@ -10,20 +10,20 @@
 // By default after BIOS the PIC uses vectors 8-15 which overlap CPU exceptions -
 // this must be done before enabling interrupts.
 static void pic_remap(void) {
-    uint8_t mask1 = inb(PIC1_DATA); // save existing masks
-    uint8_t mask2 = inb(PIC2_DATA);
+    uint8_t mask1 = inb(PORT_PIC1_DATA); // save existing masks
+    uint8_t mask2 = inb(PORT_PIC2_DATA);
 
-    outb(PIC1_CMD,  0x11); io_wait(); // ICW1: start init, expect ICW4
-    outb(PIC2_CMD,  0x11); io_wait();
-    outb(PIC1_DATA, 32);   io_wait(); // ICW2: master offset -> vector 32
-    outb(PIC2_DATA, 40);   io_wait(); // ICW2: slave offset  -> vector 40
-    outb(PIC1_DATA, 0x04); io_wait(); // ICW3: slave is on IRQ2 (bit 2)
-    outb(PIC2_DATA, 0x02); io_wait(); // ICW3: slave cascade identity = 2
-    outb(PIC1_DATA, 0x01); io_wait(); // ICW4: 8086 mode
-    outb(PIC2_DATA, 0x01); io_wait();
+    outb(PORT_PIC1_CMD,  0x11); io_wait(); // ICW1: start init, expect ICW4
+    outb(PORT_PIC2_CMD,  0x11); io_wait();
+    outb(PORT_PIC1_DATA, 32);   io_wait(); // ICW2: master offset -> vector 32
+    outb(PORT_PIC2_DATA, 40);   io_wait(); // ICW2: slave offset  -> vector 40
+    outb(PORT_PIC1_DATA, 0x04); io_wait(); // ICW3: slave is on IRQ2 (bit 2)
+    outb(PORT_PIC2_DATA, 0x02); io_wait(); // ICW3: slave cascade identity = 2
+    outb(PORT_PIC1_DATA, 0x01); io_wait(); // ICW4: 8086 mode
+    outb(PORT_PIC2_DATA, 0x01); io_wait();
 
-    outb(PIC1_DATA, mask1); // restore saved masks
-    outb(PIC2_DATA, mask2);
+    outb(PORT_PIC1_DATA, mask1); // restore saved masks
+    outb(PORT_PIC2_DATA, mask2);
 }
 
 // Send End-Of-Interrupt to the PIC.
@@ -32,8 +32,8 @@ static void pic_remap(void) {
 // For IRQs 8-15 (slave PIC), BOTH master and slave must be notified.
 static void irq_eoi(uint8_t irq) {
     if (irq >= 8)
-        outb(PIC2_CMD, PIC_EOI); // notify slave first for IRQs 8-15
-    outb(PIC1_CMD, PIC_EOI);     // always notify master
+        outb(PORT_PIC2_CMD, PORT_PIC_EOI); // notify slave first for IRQs 8-15
+    outb(PORT_PIC1_CMD, PORT_PIC_EOI);     // always notify master
 }
 
 // Vector 32 : IRQ0: PIT Programmable Interval Timer
