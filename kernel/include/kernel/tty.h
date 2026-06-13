@@ -29,5 +29,6 @@ bool terminal_isSafe();
 bool terminal_isSafePosition(size_t x, size_t y);
 struct terminal_char terminal_readEntryAt(size_t x, size_t y);
 void terminal_render(int x, int y, uint32_t scale);
+void terminal_setCursorPosition(size_t row, size_t column);
 
 #endif

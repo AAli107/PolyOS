@@ -189,5 +189,10 @@ void terminal_render(int startX, int startY, uint32_t scale)
 			);
 		}
 	}
-	
+}
+
+void terminal_setCursorPosition(size_t row, size_t column)
+{
+	terminal_column = column;
+	terminal_row = row;
 }
