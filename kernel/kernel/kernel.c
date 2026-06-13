@@ -47,36 +47,36 @@ void kernel_main(void) {
 		}
 	}
 
-	struct color32 fg = {
-		.b = 255,
-		.g = 255,
-		.r = 255,
-		.a = 255
-	};
-	struct color32 bg = {
-		.b = 0,
-		.g = 0,
-		.r = 0,
-		.a = 128
-	};
+	// struct color32 fg = {
+	// 	.b = 255,
+	// 	.g = 255,
+	// 	.r = 255,
+	// 	.a = 255
+	// };
+	// struct color32 bg = {
+	// 	.b = 0,
+	// 	.g = 0,
+	// 	.r = 0,
+	// 	.a = 128
+	// };
 
-	// test characters
-	int scale = 4;
-	for (int i = 0; i < 256; i++)
-	{
-		int x = i % 16;
-		int y = i / 16;
-		font_drawChar(x * font_getWidth() * scale, y * font_getHeight() * scale, i, *(uint32_t*)&fg, *(uint32_t*)&bg, scale);
-	}
+	// // test characters
+	// int scale = 4;
+	// for (int i = 0; i < 256; i++)
+	// {
+	// 	int x = i % 16;
+	// 	int y = i / 16;
+	// 	font_drawChar(x * font_getWidth() * scale, y * font_getHeight() * scale, i, *(uint32_t*)&fg, *(uint32_t*)&bg, scale);
+	// }
 
-	// divide by zero test (look at exceptions.c "de_handler" function to know what it will do)
-	if (false) {
-		volatile int zero = 0;
-		volatile int x = 10 / zero;
-		(void)x;
-	}
+	// // divide by zero test (look at exceptions.c "de_handler" function to know what it will do)
+	// if (false) {
+	// 	volatile int zero = 0;
+	// 	volatile int x = 10 / zero;
+	// 	(void)x;
+	// }
 
-	return; // stop here cus the terminal is yet to function correctly
+	// return; // stop here cus the terminal is yet to function correctly
 
 	terminal_initialize();
 
@@ -85,6 +85,13 @@ void kernel_main(void) {
 	printf("ehoi 🥀\n");
 	printf("%s", "dere's a special place in memory for you\n");
 	
+	terminal_setBackground((struct color32) {
+		.b = 0,
+		.g = 0,
+		.r = 0,
+		.a = 128
+	});
+
 	const char* cases[10] = {
 		"1", 
 		"45",
@@ -114,6 +121,8 @@ void kernel_main(void) {
 	printf("\nulonglong HEX: 0x%llX\n", 18446744073709551615ULL);
 
 	printf("%u %u %u", (unsigned int)sizeof(int), (unsigned int)sizeof(long), (unsigned int)sizeof(long long));
+
+	terminal_render(0, 0, 2);
 }
 
 __attribute__((noreturn))
