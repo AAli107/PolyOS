@@ -8,6 +8,7 @@
 #include <kernel/video.h>
 #include <kernel/tty.h>
 #include <kernel/font.h>
+#include <kernel/serial.h>
 
 __attribute__((used, section(".limine_requests")))
 static struct limine_framebuffer_request framebuffer_request = {
@@ -89,6 +90,8 @@ __attribute__((noreturn))
 void _start(void) {
 
 	// Pre kernel_main initialization START
+
+	serial_init();
 
 	__asm__ volatile (
 		"movq %%cr0, %%rax\n"
