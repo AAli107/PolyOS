@@ -127,6 +127,7 @@ void _start(void) {
 	);
 
 	terminal_clear();
+	terminal_setCursorPosition(0, 0);
 
 	// Pre kernel_main initialization END
 
