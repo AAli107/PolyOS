@@ -19,8 +19,3 @@ void serial_putchar(char c) {
     wait_transmit();
     outb(PORT_COM1, c);
 }
-
-void serial_write(const char* str) {
-    while (*str)
-        serial_putchar(*str++);
-}
