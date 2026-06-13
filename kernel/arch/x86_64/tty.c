@@ -1,28 +1,34 @@
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <string.h>
 
 #include <kernel/tty.h>
-
-#include "vga.h"
+#include <kernel/font.h>
 
 #define SAFETY_CHECK if (!terminal_isSafe()) return
 
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
-static uint16_t* const VGA_MEMORY = (uint16_t*) 0xB8000;
+#define VGA_WIDTH 80
+#define VGA_HEIGHT 25
 
 static size_t terminal_row;
 static size_t terminal_column;
-static uint8_t terminal_color;
-static uint16_t* terminal_buffer;
+static struct terminal_char terminal_buffer[VGA_WIDTH * VGA_HEIGHT];
+static struct color32 _backgroundColor;
+static struct color32 _foregroundColor;
 
 void terminal_initialize(void) {
 	terminal_row = 0;
 	terminal_column = 0;
-	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
-	terminal_buffer = VGA_MEMORY;
+	_backgroundColor = (struct color32){
+		.b = 0,
+		.g = 0,
+		.r = 0,
+		.a = 255
+	};
+	_foregroundColor = (struct color32){
+		.b = 192,
+		.g = 192,
+		.r = 192,
+		.a = 255
+	};
 	terminal_clear();
 }
 
@@ -30,23 +36,28 @@ void terminal_clear()
 {
 	SAFETY_CHECK;
 
+	struct terminal_char clearChar = {
+		.character = ' ',
+		.bgColor = _backgroundColor,
+		.fgColor = _foregroundColor
+	};
+
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
 			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color);
+			terminal_buffer[index] = clearChar;
 		}
 	}
 }
 
-void terminal_setcolor(uint8_t color)
-{
-    terminal_color = color;
-}
-
-void terminal_putentryat(unsigned char c, uint8_t color, size_t x, size_t y) {
+void terminal_putentryat(unsigned char c, struct color32 fgColor, struct color32 bgColor, size_t x, size_t y) {
 	if (!terminal_isSafePosition(x, y)) return;
 	const size_t index = y * VGA_WIDTH + x;
-	terminal_buffer[index] = vga_entry(c, color);
+	terminal_buffer[index] = (struct terminal_char) {
+		.character = c,
+		.bgColor = bgColor,
+		.fgColor = fgColor
+	};
 }
 
 void terminal_putchar(char c) 
@@ -54,7 +65,7 @@ void terminal_putchar(char c)
 	SAFETY_CHECK;
 
 	unsigned char uc = c;
-	terminal_putentryat(uc, terminal_color, terminal_column, terminal_row);
+	terminal_putentryat(uc, _foregroundColor, _backgroundColor, terminal_column, terminal_row);
 	if (++terminal_column == VGA_WIDTH) {
 		terminal_column = 0;
 		if (++terminal_row == VGA_HEIGHT) {
@@ -110,9 +121,31 @@ void terminal_scroll()
         }
     }
 
+	struct terminal_char clearChar = {
+		.character = ' ',
+		.bgColor = _backgroundColor,
+		.fgColor = _foregroundColor
+	};
+
     for (size_t x = 0; x < VGA_WIDTH; x++) {
-        terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = vga_entry(' ', terminal_color);
+        terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = clearChar;
     }
+}
+
+void terminal_setBackground(struct color32 color) {
+	_backgroundColor = color;
+}
+
+void terminal_setForeground(struct color32 color) {
+	_foregroundColor = color;
+}
+
+struct color32 terminal_getBackground() {
+	return _backgroundColor;
+}
+
+struct color32 terminal_getForeground() {
+	return _foregroundColor;
 }
 
 bool terminal_isSafe()
@@ -122,14 +155,34 @@ bool terminal_isSafe()
 
 bool terminal_isSafePosition(size_t x, size_t y)
 {
-	return
-		terminal_buffer == (uint16_t *) 0xB8000 &&
-		x < VGA_WIDTH && 
-		y < VGA_HEIGHT;
+	return x < VGA_WIDTH && y < VGA_HEIGHT;
 }
 
-uint16_t terminal_readEntryAt(size_t x, size_t y)
+struct terminal_char terminal_readEntryAt(size_t x, size_t y)
 {
-	if (!terminal_isSafePosition(x, y)) return 0;
-	return (uint16_t)terminal_buffer[y * VGA_WIDTH + x];
+	if (!terminal_isSafePosition(x, y)) return (struct terminal_char){0};
+	return terminal_buffer[y * VGA_WIDTH + x];
+}
+
+void terminal_render(int x, int y, uint32_t scale)
+{
+	uint32_t glyph_width = font_getWidth();
+	uint32_t glyph_height = font_getHeight();
+
+	for (size_t y = 0; y < VGA_HEIGHT; y++)
+	{
+		for (size_t x = 0; x < VGA_WIDTH; x++)
+		{
+			struct terminal_char tChar = terminal_buffer[y * VGA_WIDTH + x];
+			font_drawChar(
+				x * glyph_width * scale, 
+				y * glyph_height * scale,
+				tChar.character,
+				*(const uint32_t*)&tChar.fgColor,
+				*(const uint32_t*)&tChar.bgColor,
+				scale
+			);
+		}
+	}
+	
 }
