@@ -4,10 +4,10 @@
 #include <stdint.h>
 
 // Used to manage hardware IRQs, remap interrupt vectors, and send EOI
-#define PORT_PIC1_CMD       0x20    // master PIC command — send EOI, read ISR/IRR
-#define PORT_PIC1_DATA      0x21    // master PIC data — read/write interrupt mask
+#define PORT_PIC1_CMD       0x20    // master PIC command - send EOI, read ISR/IRR
+#define PORT_PIC1_DATA      0x21    // master PIC data - read/write interrupt mask
 #define PORT_PIC2_CMD       0xA0    // slave PIC command
-#define PORT_PIC2_DATA      0xA1    // slave PIC data — read/write interrupt mask
+#define PORT_PIC2_DATA      0xA1    // slave PIC data - read/write interrupt mask
 #define PORT_PIC_EOI        0x20    // value to write to CMD port to send EOI
 
 void outb(uint16_t port, uint8_t val) {
