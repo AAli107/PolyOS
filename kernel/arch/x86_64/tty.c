@@ -6,7 +6,7 @@
 #define SAFETY_CHECK if (!terminal_isSafe()) return
 
 #define VGA_WIDTH 80
-#define VGA_HEIGHT 25
+#define VGA_HEIGHT 40
 
 static size_t terminal_row;
 static size_t terminal_column;
