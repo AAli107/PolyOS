@@ -10,7 +10,7 @@ void serial_init(void) {
     outb(PORT_COM1 + 3, 0x03);
     outb(PORT_COM1 + 2, 0xC7);
     outb(PORT_COM1 + 4, 0x0B);
-    printf("%s", "Serial initialized    [  ok  ]\n");
+    printf("%s", "-> Serial initialized.\n");
 }
 
 static void wait_transmit(void) {

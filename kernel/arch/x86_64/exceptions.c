@@ -246,5 +246,5 @@ void exceptions_init(void) {
         idt_register_handler(i, reserved2_handler);
 
     
-    printf("%s", "Registered exception handlers    [  ok  ]\n");
+    printf("%s", "-> Registered exception handlers.\n");
 }

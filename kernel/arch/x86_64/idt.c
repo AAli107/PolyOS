@@ -64,5 +64,5 @@ void idt_init(void) {
 
     __asm__ volatile ("lidt %0" : : "m"(idtr) : "memory");
 
-    printf("%s", "IDT initialized    [  ok  ]\n");
+    printf("%s", "-> IDT initialized.\n");
 }

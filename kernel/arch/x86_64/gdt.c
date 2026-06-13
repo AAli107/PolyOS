@@ -117,7 +117,7 @@ void gdt_init(void) {
         : "rax", "memory"
     );
 
-    printf("%s", "GDT initialized    [  ok  ]\n");
+    printf("%s", "-> GDT initialized.\n");
 }
 
 

@@ -33,7 +33,7 @@ void terminal_initialize(void) {
 	};
 	terminal_clear();
 
-    printf("%s", "Terminal initialized    [  ok  ]\n");
+    printf("%s", "-> Terminal initialized.\n");
 }
 
 void terminal_clear()

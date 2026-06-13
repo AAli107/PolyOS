@@ -24,7 +24,7 @@ int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest) 
     
     video_setEnableBlend(false);
 
-    printf("%s", "Video initialized    [  ok  ]\n");
+    printf("%s", "-> Video initialized.\n");
     return 0;
 }
 

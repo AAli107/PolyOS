@@ -197,5 +197,5 @@ void irq_init(void) {
     idt_register_handler(46, irq14_ata_primary);
     idt_register_handler(47, irq15_ata_secondary_spurious);
 
-    printf("%s", "Registered IRQ handlers    [  ok  ]\n");
+    printf("%s", "-> Registered IRQ handlers.\n");
 }
