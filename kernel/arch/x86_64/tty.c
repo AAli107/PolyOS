@@ -2,6 +2,7 @@
 
 #include <kernel/tty.h>
 #include <kernel/font.h>
+#include <kernel/serial.h>
 
 #define SAFETY_CHECK if (!terminal_isSafe()) return
 
@@ -84,6 +85,7 @@ void terminal_write(const char* data, size_t size)
 			case '\t': terminal_indent();   break;
 			default:   terminal_putchar(data[i]); break;
 		}
+		serial_putchar(data[i]);
 	}
 }
 
