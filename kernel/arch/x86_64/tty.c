@@ -164,7 +164,7 @@ struct terminal_char terminal_readEntryAt(size_t x, size_t y)
 	return terminal_buffer[y * VGA_WIDTH + x];
 }
 
-void terminal_render(int x, int y, uint32_t scale)
+void terminal_render(int startX, int startY, uint32_t scale)
 {
 	uint32_t glyph_width = font_getWidth();
 	uint32_t glyph_height = font_getHeight();
@@ -175,8 +175,8 @@ void terminal_render(int x, int y, uint32_t scale)
 		{
 			struct terminal_char tChar = terminal_buffer[y * VGA_WIDTH + x];
 			font_drawChar(
-				x * glyph_width * scale, 
-				y * glyph_height * scale,
+				startX + (x * glyph_width * scale), 
+				startY + (y * glyph_height * scale),
 				tChar.character,
 				*(const uint32_t*)&tChar.fgColor,
 				*(const uint32_t*)&tChar.bgColor,
