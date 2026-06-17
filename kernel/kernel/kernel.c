@@ -85,6 +85,17 @@ void kernel_main(void) {
 	printf("%u %u %u", (unsigned int)sizeof(int), (unsigned int)sizeof(long), (unsigned int)sizeof(long long));
 
 	terminal_render(0, 0, 2);
+
+	while (true)
+	{
+		char c = keyboard_getchar();
+		if (c != 0)
+		{
+			printf("%c", c);
+			terminal_render(0, 0, 2);
+		}
+	}
+	
 }
 
 __attribute__((noreturn))
@@ -131,6 +142,8 @@ void _start(void) {
 
 	terminal_clear();
 	terminal_setCursorPosition(0, 0);
+
+	__asm__ volatile ("sti");
 
 	// Pre kernel_main initialization END
 
