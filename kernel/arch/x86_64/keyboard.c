@@ -1,4 +1,5 @@
 #include <kernel/keyboard.h>
+#include <stddef.h>
 
 static const char scancode_to_ascii[128] = {
     0,  27, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
@@ -21,12 +22,19 @@ static const char scancode_to_ascii_shift[128] = {
 #define RSHIFT_PRESSED 0x36
 #define RSHIFT_RELEASED 0xB6
 
+#define KB_BUFFER_SIZE 256
+static char kb_buffer[KB_BUFFER_SIZE];
+static size_t kb_head = 0;
+static size_t kb_tail = 0;
+
 void keyboard_init(void)
 {
+
 }
 
 void keyboard_handle_scancode(uint8_t scancode)
 {
+    
 }
 
 char keyboard_getchar(void)
