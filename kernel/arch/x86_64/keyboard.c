@@ -16,6 +16,11 @@ static const char scancode_to_ascii_shift[128] = {
     '*', 0, ' ', 0,
 };
 
+#define LSHIFT_PRESSED 0x2A
+#define LSHIFT_RELEASED 0xAA
+#define RSHIFT_PRESSED 0x36
+#define RSHIFT_RELEASED 0xB6
+
 void keyboard_init(void)
 {
 }
