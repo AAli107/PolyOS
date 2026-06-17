@@ -8,24 +8,21 @@
 // to speed shit up, I just told AI to automatically generate bunch of irq handling functions for me to fill in later :P
 // This is the same for exceptions within exceptions.c
 
-// Remap the PIC so IRQ0-7 map to vectors 32-39 and IRQ8-15 to 40-47.
-// By default after BIOS the PIC uses vectors 8-15 which overlap CPU exceptions -
 // this must be done before enabling interrupts.
 static void pic_remap(void) {
-    uint8_t mask1 = inb(PORT_PIC1_DATA); // save existing masks
-    uint8_t mask2 = inb(PORT_PIC2_DATA);
-
-    outb(PORT_PIC1_CMD,  0x11); io_wait(); // ICW1: start init, expect ICW4
+    outb(PORT_PIC1_CMD,  0x11); io_wait();
     outb(PORT_PIC2_CMD,  0x11); io_wait();
-    outb(PORT_PIC1_DATA, 32);   io_wait(); // ICW2: master offset -> vector 32
-    outb(PORT_PIC2_DATA, 40);   io_wait(); // ICW2: slave offset  -> vector 40
-    outb(PORT_PIC1_DATA, 0x04); io_wait(); // ICW3: slave is on IRQ2 (bit 2)
-    outb(PORT_PIC2_DATA, 0x02); io_wait(); // ICW3: slave cascade identity = 2
-    outb(PORT_PIC1_DATA, 0x01); io_wait(); // ICW4: 8086 mode
+    outb(PORT_PIC1_DATA, 32);   io_wait();
+    outb(PORT_PIC2_DATA, 40);   io_wait();
+    outb(PORT_PIC1_DATA, 0x04); io_wait();
+    outb(PORT_PIC2_DATA, 0x02); io_wait();
+    outb(PORT_PIC1_DATA, 0x01); io_wait();
     outb(PORT_PIC2_DATA, 0x01); io_wait();
 
-    outb(PORT_PIC1_DATA, mask1); // restore saved masks
-    outb(PORT_PIC2_DATA, mask2);
+    // explicitly unmask only timer (IRQ0), keyboard (IRQ1), and cascade (IRQ2)
+    // IRQ2 must stay unmasked or slave IRQs (8-15) will never reach the CPU
+    outb(PORT_PIC1_DATA, 0xF8); // 1111 1000 — IRQ0,1,2 unmasked, rest masked
+    outb(PORT_PIC2_DATA, 0xFF); // all slave IRQs masked for now
 }
 
 // Send End-Of-Interrupt to the PIC.
