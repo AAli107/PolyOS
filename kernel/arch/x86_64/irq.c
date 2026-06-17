@@ -52,6 +52,7 @@ static void irq0_timer(interrupt_frame_t *frame) {
 // Each physical key event fires one interrupt.
 static void irq1_keyboard(interrupt_frame_t *frame) {
     (void)frame;
+    keyboard_handle_scancode(inb(PORT_PS2_DATA));
     irq_eoi(1);
 }
 
