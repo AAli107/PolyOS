@@ -17,6 +17,9 @@
 #define PORT_COM3           0x3E8   // COM3 base - IRQ4 (shared)
 #define PORT_COM4           0x2E8   // COM4 base - IRQ3 (shared)
 
+// Used to read keyboard scancodes
+#define PORT_PS2_DATA       0x60    // read scancode byte, write command data
+
 static inline void outb(uint16_t port, uint8_t val) {
     __asm__ volatile ("outb %0, %1" : : "a"(val), "Nd"(port) : "memory");
 }
