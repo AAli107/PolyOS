@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
+static bool isInit = false;
 static bool _enableBlend;
 struct limine_framebuffer* _frameBuffer;
 volatile uint32_t* fbAddress;
@@ -25,6 +26,8 @@ int32_t video_initialize(struct limine_framebuffer_request* framebufferRequest) 
     video_setEnableBlend(false);
 
     printf("%s", "-> Video initialized.\n");
+
+    isInit = true;
     return 0;
 }
 
@@ -106,4 +109,9 @@ uint32_t video_uint32_blend(uint32_t dst, uint32_t src)
 struct color32 video_color32_blend(struct color32 dst, struct color32 src)
 {
     return *(const struct color32 *)video_uint32_blend(*(uint32_t*)&dst, *(uint32_t*)&src);
+}
+
+bool video_isInit()
+{
+    return isInit;
 }

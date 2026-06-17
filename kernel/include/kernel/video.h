@@ -51,4 +51,6 @@ uint32_t video_uint32_blend(uint32_t dst, uint32_t src);
 // Blends two colors, which accepts and recieves color32
 struct color32 video_color32_blend(struct color32 dst, struct color32 src);
 
+bool video_isInit();
+
 #endif
