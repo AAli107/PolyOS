@@ -56,8 +56,8 @@ void terminal_clear()
 
 void terminal_putentryat(unsigned char c, struct color32 fgColor, struct color32 bgColor, size_t x, size_t y) {
 	if (!terminal_isSafePosition(x, y)) return;
-	const size_t index = y * VGA_WIDTH + x;
-	terminal_buffer[index] = (struct terminal_char) {
+	
+	terminal_buffer[y * VGA_WIDTH + x] = (struct terminal_char) {
 		.character = c,
 		.bgColor = bgColor,
 		.fgColor = fgColor
