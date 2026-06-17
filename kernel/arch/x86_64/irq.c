@@ -1,6 +1,7 @@
 #include <kernel/irq.h>
 #include <kernel/idt.h>
 #include <kernel/io.h>
+#include <kernel/keyboard.h>
 #include <stdint.h>
 #include <stdio.h>
 
