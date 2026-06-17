@@ -47,9 +47,6 @@ static void irq0_timer(interrupt_frame_t *frame) {
 }
 
 // Vector 33 : IRQ1: PS/2 Keyboard
-// Fired by: a key press or release on the PS/2 keyboard.
-// Read the scancode from port 0x60 inside the handler.
-// Each physical key event fires one interrupt.
 static void irq1_keyboard(interrupt_frame_t *frame) {
     (void)frame;
     keyboard_handle_scancode(inb(PORT_PS2_DATA));
