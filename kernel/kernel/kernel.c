@@ -9,6 +9,7 @@
 #include <kernel/tty.h>
 #include <kernel/font.h>
 #include <kernel/serial.h>
+#include <kernel/keyboard.h>
 
 __attribute__((used, section(".limine_requests")))
 static struct limine_framebuffer_request framebuffer_request = {
@@ -121,6 +122,8 @@ void _start(void) {
 	// registers handlers for exceptions and irqs 
 	exceptions_init();
 	irq_init();
+
+	keyboard_init(); // sets up the keyboard
 
 	gdt_set_kernel_stack(
 		(uint64_t)&kernel_stack[KERNEL_STACK_SIZE]
