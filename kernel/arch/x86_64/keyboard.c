@@ -1,5 +1,6 @@
 #include <kernel/keyboard.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 static const char scancode_to_ascii[128] = {
     0,  27, '1','2','3','4','5','6','7','8','9','0','-','=','\b',
@@ -26,18 +27,48 @@ static const char scancode_to_ascii_shift[128] = {
 static char kb_buffer[KB_BUFFER_SIZE];
 static size_t kb_head = 0;
 static size_t kb_tail = 0;
+static bool shiftHeld = false;
+
+static void kb_buffer_push(char c) {
+    size_t next = (kb_head + 1) % KB_BUFFER_SIZE;
+    if (next == kb_tail) return;
+    kb_buffer[kb_head] = c;
+    kb_head = next;
+}
 
 void keyboard_init(void)
 {
-
+    kb_head = 0;
+    kb_tail = 0;
+    shiftHeld = false;
+    printf("%s", "-> Keyboard initialized.\n");
 }
 
 void keyboard_handle_scancode(uint8_t scancode)
 {
-    
+    if (scancode == LSHIFT_PRESSED || scancode == RSHIFT_PRESSED) {
+        shiftHeld = true;
+        return;
+    }
+    if (scancode == LSHIFT_RELEASED || scancode == RSHIFT_RELEASED) {
+        shiftHeld = false;
+        return;
+    }
+
+    bool released = scancode & 0x80;
+    if (released) return;
+
+    uint8_t index = scancode & 0x7F;
+
+    char c = shiftHeld ? scancode_to_ascii_shift[index] : scancode_to_ascii[index];
+    if (c != 0)
+        kb_buffer_push(c);
 }
 
 char keyboard_getchar(void)
 {
-    return 0;
+    if (kb_head == kb_tail) return 0;
+    char c = kb_buffer[kb_tail];
+    kb_tail = (kb_tail + 1) % KB_BUFFER_SIZE;
+    return c;
 }
