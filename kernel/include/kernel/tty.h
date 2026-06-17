@@ -6,12 +6,12 @@
 #include <stdbool.h>
 #include <kernel/video.h>
 
-struct terminal_char
+typedef struct
 {
 	unsigned char character;
 	struct color32 bgColor;
 	struct color32 fgColor;
-};
+} terminal_char;
 
 void terminal_initialize(void);
 void terminal_clear();
@@ -27,7 +27,7 @@ struct color32 terminal_getBackground();
 struct color32 terminal_getForeground();
 bool terminal_isSafe();
 bool terminal_isSafePosition(size_t x, size_t y);
-struct terminal_char terminal_readEntryAt(size_t x, size_t y);
+terminal_char terminal_readEntryAt(size_t x, size_t y);
 void terminal_render(int x, int y, uint32_t scale);
 void terminal_setCursorPosition(size_t row, size_t column);
 

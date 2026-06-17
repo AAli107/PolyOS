@@ -12,9 +12,16 @@
 
 static size_t terminal_row;
 static size_t terminal_column;
-static struct terminal_char terminal_buffer[VGA_WIDTH * VGA_HEIGHT];
+static terminal_char terminal_buffer[VGA_WIDTH * VGA_HEIGHT];
+static bool dirty_buffer[VGA_WIDTH * VGA_HEIGHT];
 static struct color32 _backgroundColor;
 static struct color32 _foregroundColor;
+
+static void terminal_putTerminalCharAt(const terminal_char tc, size_t x, size_t y) {
+	int index = y * VGA_WIDTH + x;
+	terminal_buffer[index] = tc;
+	dirty_buffer[index] = true;
+}
 
 void terminal_initialize(void) {
 	terminal_row = 0;
@@ -40,7 +47,7 @@ void terminal_clear()
 {
 	SAFETY_CHECK;
 
-	struct terminal_char clearChar = {
+	terminal_char clearChar = {
 		.character = ' ',
 		.bgColor = _backgroundColor,
 		.fgColor = _foregroundColor
@@ -48,8 +55,7 @@ void terminal_clear()
 
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
-			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = clearChar;
+			terminal_putTerminalCharAt(clearChar, x, y);
 		}
 	}
 }
@@ -57,11 +63,13 @@ void terminal_clear()
 void terminal_putentryat(unsigned char c, struct color32 fgColor, struct color32 bgColor, size_t x, size_t y) {
 	if (!terminal_isSafePosition(x, y)) return;
 	
-	terminal_buffer[y * VGA_WIDTH + x] = (struct terminal_char) {
-		.character = c,
-		.bgColor = bgColor,
-		.fgColor = fgColor
-	};
+	terminal_putTerminalCharAt(
+		(terminal_char) {
+			.character = c,
+			.bgColor = bgColor,
+			.fgColor = fgColor
+		}, x, y
+	);
 }
 
 void terminal_putchar(char c) 
@@ -126,7 +134,7 @@ void terminal_scroll()
         }
     }
 
-	struct terminal_char clearChar = {
+	terminal_char clearChar = {
 		.character = ' ',
 		.bgColor = _backgroundColor,
 		.fgColor = _foregroundColor
@@ -135,6 +143,8 @@ void terminal_scroll()
     for (size_t x = 0; x < VGA_WIDTH; x++) {
         terminal_buffer[(VGA_HEIGHT - 1) * VGA_WIDTH + x] = clearChar;
     }
+
+	memset(dirty_buffer, true, VGA_WIDTH * VGA_HEIGHT);
 }
 
 void terminal_setBackground(struct color32 color) {
@@ -163,14 +173,16 @@ bool terminal_isSafePosition(size_t x, size_t y)
 	return x < VGA_WIDTH && y < VGA_HEIGHT;
 }
 
-struct terminal_char terminal_readEntryAt(size_t x, size_t y)
+terminal_char terminal_readEntryAt(size_t x, size_t y)
 {
-	if (!terminal_isSafePosition(x, y)) return (struct terminal_char){0};
+	if (!terminal_isSafePosition(x, y)) return (terminal_char){0};
 	return terminal_buffer[y * VGA_WIDTH + x];
 }
 
 void terminal_render(int startX, int startY, uint32_t scale)
 {
+	if (!video_isInit()) return;
+
 	uint32_t glyph_width = font_getWidth();
 	uint32_t glyph_height = font_getHeight();
 
@@ -178,15 +190,19 @@ void terminal_render(int startX, int startY, uint32_t scale)
 	{
 		for (size_t x = 0; x < VGA_WIDTH; x++)
 		{
-			struct terminal_char tChar = terminal_buffer[y * VGA_WIDTH + x];
-			font_drawChar(
-				startX + (x * glyph_width * scale), 
-				startY + (y * glyph_height * scale),
-				tChar.character,
-				*(const uint32_t*)&tChar.fgColor,
-				*(const uint32_t*)&tChar.bgColor,
-				scale
-			);
+			int index = y * VGA_WIDTH + x;
+			if (dirty_buffer[index]) {
+				terminal_char tChar = terminal_buffer[index];
+				font_drawChar(
+					startX + (x * glyph_width * scale),
+					startY + (y * glyph_height * scale),
+					tChar.character,
+					*(const uint32_t*)&tChar.fgColor,
+					*(const uint32_t*)&tChar.bgColor,
+					scale
+				);
+				dirty_buffer[index] = false;
+			}
 		}
 	}
 }
